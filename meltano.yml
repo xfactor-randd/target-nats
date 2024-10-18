@@ -1,0 +1,32 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: "target-nats"
+default_environment: test
+environments:
+- name: test
+plugins:
+  extractors:
+  - name: tap-smoke-test
+    variant: meltano
+    pip_url: git+https://github.com/meltano/tap-smoke-test.git
+    config:
+      streams:
+      - stream_name: animals
+        input_filename: https://raw.githubusercontent.com/meltano/tap-smoke-test/main/demo-data/animals-data.jsonl
+      - stream_name: pageviews
+        input_filename: https://raw.githubusercontent.com/meltano/tap-smoke-test/main/demo-data/pageviews-data.jsonl
+
+  loaders:
+  - name: "target-nats"
+    namespace: "target_nats"
+    pip_url: -e .
+    capabilities:
+    - about
+
+    # TODO: Declare settings and their types here:
+    settings:
+    - name: nats_url
+      label: NATS URL
+      description: The url of the nats broker or cluster
+    - name: queue_prefix
+      label: Any prefix to apply to the topic
