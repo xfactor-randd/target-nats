@@ -45,7 +45,6 @@ class NatsSink(RecordSink):
             record: Individual record in the stream.
             context: Stream partition or context dictionary.
         """
-        self.logger.info("publishing message")
         task = self._loop.create_task(
             self._nats.publish(
                 f"{self._topic_prefix}{self.stream_name}",
