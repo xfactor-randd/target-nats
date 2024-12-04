@@ -6,6 +6,9 @@ import json
 
 from nats.aio.client import Client as NATS
 
+import ddtrace
+from ddtrace.internal.datastreams.processor import PROPAGATION_KEY_BASE_64
+
 
 from singer_sdk.sinks import RecordSink
 
@@ -45,10 +48,26 @@ class NatsSink(RecordSink):
             record: Individual record in the stream.
             context: Stream partition or context dictionary.
         """
+
+        headers = {}
+        data = json.dumps(record, default=str).encode()
+        topic = f"{self._topic_prefix}{self.stream_name}"
+        if ddtrace.config._data_streams_enabled:
+            pathway = ddtrace.tracer.data_streams_processor.set_checkpoint(
+                [
+                    "type:nats",
+                    f"topic:{topic}",
+                    "direction:out",
+                ],
+                payload_size=len(data),
+            )
+            headers[PROPAGATION_KEY_BASE_64] = pathway.encode_b64()
+
         task = self._loop.create_task(
             self._nats.publish(
-                f"{self._topic_prefix}{self.stream_name}",
-                json.dumps(record, default=str).encode(),
+                topic,
+                data,
+                headers=headers,
             )
         )
         self._loop.run_until_complete(task)
