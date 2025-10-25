@@ -21,11 +21,11 @@ license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-singer-sdk = { version="~=0.40.0" }
+singer-sdk = { version="~=0.52.2" }
 fs-s3fs = { version = "~=1.1.1", optional = true }
-nats-py = { version = "~=2.9.0" }
-ddtrace = { version = "~=2.17.2" }
-requests = "~=2.32.3"
+nats-py = { version = "~=2.11.0" }
+ddtrace = { version = "~=3.17.0" }
+requests = "~=2.32.5"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8"
@@ -38,7 +38,7 @@ s3 = ["fs-s3fs"]
 addopts = '--durations=10'
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 warn_unused_configs = true
 
 [tool.ruff]
