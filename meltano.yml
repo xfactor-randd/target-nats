@@ -30,3 +30,11 @@ plugins:
       description: The url of the nats broker or cluster
     - name: queue_prefix
       label: Any prefix to apply to the topic
+    - name: enable_schema_registry
+      label: Flag to enable sending schemas to the schema registry
+    - name: schema_registry_url
+      label: URL of the APICURIO registry
+    - name: schema_group_id
+      label: The schema group to leverage
+    - name: schema_topic_prefix
+      label: A prefix for any schema topics

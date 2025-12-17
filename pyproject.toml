@@ -1,9 +1,11 @@
-[tool.poetry]
+[project]
 name = "target-nats"
 version = "0.0.1"
 description = "Singer target for nats, built with the Meltano Singer SDK."
+authors = [{ name = "Jonathan Steele", email = "jonathan.steele@xfactor.io" }]
+requires-python = ">=3.10"
 readme = "README.md"
-authors = ["Jonathan Steele <jonathan.steele@xfactor.io>"]
+license = "Apache-2.0"
 keywords = [
     "ELT",
     "nats",
@@ -16,26 +18,30 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
-license = "Apache-2.0"
+dependencies = [
+    "boto3>=1.40.71",
+    "singer-sdk>=0.52.2",
+    "nats-py>=2.11.0",
+    "ddtrace>=3.17.0",
+    "requests>=2.32.5",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.8"
-singer-sdk = { version="~=0.52.2" }
-fs-s3fs = { version = "~=1.1.1", optional = true }
-nats-py = { version = "~=2.11.0" }
-ddtrace = { version = "~=3.17.0" }
-requests = "~=2.32.5"
+[project.scripts]
+target-nats = "target_nats.target:main"
 
-[tool.poetry.dev-dependencies]
-pytest = ">=8"
-singer-sdk = { version="~=0.40.0", extras = ["testing"] }
-
-[tool.poetry.extras]
-s3 = ["fs-s3fs"]
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.21.0",
+    "singer-sdk[testing]>=0.40.0",
+]
 
 [tool.pytest.ini_options]
 addopts = '--durations=10'
+asyncio_mode = "auto"
 
 [tool.mypy]
 python_version = "3.14"
@@ -64,9 +70,23 @@ known-first-party = ["target_nats"]
 convention = "google"
 
 [build-system]
-requires = ["poetry-core==1.9.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry.scripts]
-# CLI declaration
-target-nats = 'target_nats.target:main'
+
+[tool.black]
+line-length = 79
+include = '\.pyi?$' # All Python files
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
