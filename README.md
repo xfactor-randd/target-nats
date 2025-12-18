@@ -57,6 +57,36 @@ environment variable is set either in the terminal context or in the `.env` file
 Developer TODO: If your target requires special access on the destination system, or any special authentication requirements, provide those here.
 -->
 
+## Async Architecture
+
+This NATS target features an **async-first design** for optimal performance when publishing messages to NATS brokers. Key improvements include:
+
+### 🚀 Performance Features
+
+- **Concurrent Publishing**: Records are published asynchronously using `asyncio` for better throughput
+- **Connection Pooling**: NATS connections are reused and managed efficiently
+- **Batch Processing**: Support for concurrent batch publishing of multiple records
+- **Smart Event Loop Management**: Automatically detects and reuses existing event loops
+
+### 🔧 Async Compatibility
+
+- **Singer SDK Compatible**: Maintains full compatibility with the synchronous Singer SDK interface
+- **Schema Registry Integration**: Async support for Apicurio Schema Registry operations
+- **DataDog Telemetry**: Integrated with DataDog data streams monitoring for async operations
+
+### 📊 Configuration Options
+
+```json
+{
+  "nats_url": "nats://localhost:4222",
+  "queue_prefix": "my_prefix_",
+  "enable_schema_registry": true,
+  "schema_registry_url": "http://localhost:8080/apis/registry/v3"
+}
+```
+
+See `examples/async_usage.py` for detailed examples of using the async capabilities.
+
 ## Usage
 
 You can easily run `target-nats` by itself or in a pipeline using [Meltano](https://meltano.com/).
